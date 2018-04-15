@@ -137,18 +137,22 @@ describe('Option', () => {
         let baz = option(yield RSVP.resolve(3)).valueOrElse(6);
 
         return baz + bar;
-      })
+      }),
+
+      doIt() {
+        return this.get('theTask').perform();
+      }
     });
+
+    const foo = Foo.create();
 
     return new RSVP.Promise((resolve) => {
       Ember.run(() => {
-        Foo.create()
-          .get('theTask')
-          .perform()
-          .then((result) => {
-            expect(result).to.equal(5);
-            resolve();
-          });
+        foo.doIt().then((result) => {
+          expect(result).to.equal(5);
+
+          resolve();
+        });
       });
     });
   });
