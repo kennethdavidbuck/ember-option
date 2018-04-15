@@ -133,10 +133,10 @@ describe('Option', () => {
   it('foo bar baz', () => {
     const Foo = Ember.Object.extend({
       theTask: task(function * () {
-        let bar = option(yield RSVP.resolve(null));
-        let baz= option(yield RSVP.resolve(3));
+        let bar = option(yield RSVP.resolve(null)).valueOrElse(2);
+        let baz = option(yield RSVP.resolve(3)).valueOrElse(3);
 
-        return baz.valueOrElse(3) + bar.valueOrElse(2);
+        return baz + bar;
       })
     });
 
