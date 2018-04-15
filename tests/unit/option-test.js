@@ -139,7 +139,7 @@ describe('Option', () => {
         return baz + bar;
       }),
 
-      doIt() {
+      performTask() {
         return this.get('theTask').perform();
       }
     });
@@ -148,7 +148,7 @@ describe('Option', () => {
 
     return new RSVP.Promise((resolve) => {
       Ember.run(() => {
-        foo.doIt().then((result) => {
+        foo.performTask().then((result) => {
           expect(result).to.equal(5);
 
           resolve();
