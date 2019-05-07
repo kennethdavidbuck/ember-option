@@ -5,8 +5,11 @@ import {
   it,
   fail
 } from 'mocha';
-
+import {task} from 'ember-concurrency';
+import Ember from 'ember';
 import option from 'ember-option/option';
+
+const {RSVP} = Ember;
 
 describe('Option', () => {
   // Replace this with your real tests.
@@ -127,5 +130,30 @@ describe('Option', () => {
     expect(option(2).orElse(() => option(4)).value).to.equal(2);
   });
 
+  it('foo bar baz', () => {
+    const Foo = Ember.Object.extend({
+      theTask: task(function * () {
+        let bar = option(yield RSVP.resolve(null)).valueOrElse(2);
+        let baz = option(yield RSVP.resolve(3)).valueOrElse(6);
 
+        return baz + bar;
+      }),
+
+      performTask() {
+        return this.get('theTask').perform();
+      }
+    });
+
+    const foo = Foo.create();
+
+    return new RSVP.Promise((resolve) => {
+      Ember.run(() => {
+        foo.performTask().then((result) => {
+          expect(result).to.equal(5);
+
+          resolve();
+        });
+      });
+    });
+  });
 });
